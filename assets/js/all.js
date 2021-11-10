@@ -14,7 +14,7 @@ var swiper = new Swiper('.siteSwiper', {
     el: ".swiper-pagination"
   },
   breakpoints: {
-    768: {
+    576: {
       slidesPerView: 2.8,
       spaceBetween: 20
     },
