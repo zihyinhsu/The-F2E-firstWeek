@@ -22,13 +22,22 @@
 //logo
 .logo {
   display:block; /*使a成為區塊元素可以長寬高*/
-  background: url('../images/logo/logo1-sm.png') no-repeat; /*設定要使用的圖片，且不要重複*/
-  width: 132px; /*需求的寬度*/
-  height: 30px; /*需求的高度*/
+  background: url('../images/logo/logo.png') no-repeat; /*設定要使用的圖片，且不要重複*/
+  width: 170px; /*需求的寬度*/
+  height: 61px; /*需求的高度*/
   text-indent: 101%; /*讓文字首行縮排到範圍外*/
   overflow: hidden; /*超過範圍的就自動隱藏*/
   white-space: nowrap; /*不要斷行就一排，所以只有"首行"*/
   background-size: cover;
+  @include media-breakpoint-up(md) {
+    width: 205px;
+    height: 73px;
+  }
+  @include media-breakpoint-up(lg) {
+    width: 253px; 
+    height: 90px;
+  }
+  
 }
 
 //googleMap

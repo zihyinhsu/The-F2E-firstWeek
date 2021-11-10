@@ -302,9 +302,13 @@ $negative-spacers: if($enable-negative-margins, negativify-map($spacers), null) 
 // scss-docs-start position-map
 $position-values: (
   n60: -60%,//new
-  n55: -55%,//new
+  n10: -10%,//new
+  n5: -5%,//new
+  n3: -3%,//new
   0: 0,
   50: 50%,
+  75: 75%,
+  80: 80%,
   100: 100%
 ) !default;
 // scss-docs-end position-map
@@ -492,13 +496,13 @@ $line-height-base:            1.5 !default;
 $line-height-sm:              1.25 !default;
 $line-height-lg:              2 !default;
 
-$h1-font-size:                $font-size-base * 2.25;//$font-size-base * 2.5 !default;
+$h1-font-size:                $font-size-base * 3;//$font-size-base * 2.5 !default;
 $h2-font-size:                $font-size-base * 2;//$font-size-base * 2 !default;
 $h3-font-size:                $font-size-base * 1.5;//$font-size-base * 1.75 !default;
-$h4-font-size:                $font-size-base * 1.25;//$font-size-base * 1.5 !default;
-$h5-font-size:                $font-size-base * 1.125 ;//$font-size-base * 1.25 !default;
-$h6-font-size:                $font-size-base ;//$font-size-base !default;
-$sm-font-size:                $font-size-base * 0.875 ;//$font-size-base * 1.25 !default;
+$h4-font-size:                $font-size-base * 1;//$font-size-base * 1.5 !default;
+$h5-font-size:                $font-size-base * 0 ;//$font-size-base * 1.25 !default;
+$h6-font-size:                $font-size-base * 0 ;//$font-size-base !default;
+$sm-font-size:                $font-size-base * 0 ;//$font-size-base * 1.25 !default;
 // scss-docs-end font-variables
 
 // scss-docs-start font-sizes
