@@ -68,3 +68,14 @@
 .ball-beat > div {
   background-color: $primary;
 }
+
+// 行數過長的文字隱藏
+.ellipsis5 {
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 5; /*行數*/
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
