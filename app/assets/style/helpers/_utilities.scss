@@ -87,6 +87,7 @@ $utilities: map-merge(
       )
     ),
     "single-rounded": (
+      responsive: true,//new
       property: border-radius,
       class: single-rounded,
       values: (
@@ -94,7 +95,10 @@ $utilities: map-merge(
         2: 0px 8px 0px 0px, //右上
         3: 0px 0px 8px 0px, //右下
         4: 0px 0px 0px 8px, //左下
-        5: 0px 8px 0px 8px
+        5: 0px 8px 0px 8px,
+        6: 8px 0px 8px 0px,
+        7: 0px 12px 0px 12px,
+        8: 12px 0px 12px 0px,
       )
     ),
     "z-index": (

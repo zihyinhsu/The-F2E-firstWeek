@@ -71,11 +71,12 @@ $primary:        #ffc437; // $blue !default;
 $secondary:     #222222;//$gray-600 !default;
 $tertiary:       #444444;//new
 $success:       #018469; //$green !default;
-
+$light-gray:     #666666;//new
+$footer-black:   #041D30;//new
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$light:         $gray-100 !default;
+$light:         #e2ebf1; // $gray-100 !default;
 
 $gray:           #e2ebf1; //new
 $dark:           #041d30;//$gray-900 !default;
@@ -90,6 +91,8 @@ $theme-colors: (
   "secondary":  $secondary,
   "success":    $success,
   "tertiary":   $tertiary,//new
+  "light-gray": $light-gray, //new
+  "footer-black": $footer-black, //new
   "info":       $info,
   "warning":    $warning,
   "danger":     $danger,
