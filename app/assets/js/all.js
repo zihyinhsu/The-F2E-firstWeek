@@ -9,6 +9,7 @@ const displayCard = document.querySelector('.displayCard');
 const chooseArea = document.querySelectorAll('.areaSelectSection >.formSection >.form-check > input');
 const chooseType = document.querySelectorAll('.chooseType >.formSection >.form-check > input');
 const advanchSearchButton = document.querySelector('.advanchSearchButton');
+
 //全域變數
 const zipCodeMap = {
   100: '中正區',
@@ -96,6 +97,9 @@ else if(chooseZipCode.length>0 && chooseTypeArray.length>0){
 //console.log(searchKeyWord)
 searchProcess(searchKeyWord);
 }
+
+
+
 //選擇類別
 function seltTypeData() {
   let searchKeyWord = '';
@@ -241,6 +245,7 @@ changeClick.addEventListener('click', changeClickProcess, false);
 selectMenu.addEventListener('change', seltTypeData, false);
 typeButton.addEventListener('click', clickTypeData, false);
 advanchSearchButton.addEventListener('click',advanceChose,false);
+
 //開啟網頁後執行
 cheangProcess()
 
