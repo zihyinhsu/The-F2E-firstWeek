@@ -5,9 +5,11 @@ const changeClick = document.querySelector('.changeClick');
 const showChangeClick = document.querySelector('.showChangeClick');
 const selectMenu = document.querySelector('.selectMenu');
 const typeButton = document.querySelector('.typeButton');
-const displayCard = document.querySelector('.displayCard'); 
+const displayCard = document.querySelector('.displayCard');
+const chooseArea = document.querySelectorAll('.areaSelectSection >.formSection >.form-check > input');
+const chooseType = document.querySelectorAll('.chooseType >.formSection >.form-check > input');
+const advanchSearchButton = document.querySelector('.advanchSearchButton');
 //全域變數
-let inputData = '';
 const zipCodeMap = {
   100: '中正區',
   103: '大同區',
@@ -23,29 +25,87 @@ const zipCodeMap = {
   116: '文山區',
 }
 //class的分類["遊憩類","自然風景類","溫泉類","都會公園類","體育健身類","藝術類","其他"]
-//取得資料
-function test() {
-  console.log('test')
+//想出發去哪裡
+
+function wantToGOWhere() {
+  let searchKeyWord ='';
+  if (inputSearch.value === '') {
+    alert('輸入到空白，請重新輸入')
+  }
+  else {
+    //console.log(inputSearch.value)
+    searchKeyWord= `contains(DescriptionDetail ,'${inputSearch.value}') or contains(Name, '${inputSearch.value}') or contains(Address ,'${inputSearch.value}')`
+    //`contains(DescriptionDetail ,'熱門') or contains(Name, '熱門') or contains(Address ,'熱門')`
+    //console.log(searchKeyWord)
+    searchProcess(searchKeyWord);
+  }
+  
 }
-// function getInputData() {
-//   if (inputSearch.value === '') {
-//     alert('輸入到空白，請重新輸入')
-//   }
-//   else {
-//     inputData = inputSearch.value;
-//   }
-//   inputSearch.value = '';
-// }
+
+//進階選擇
+function advanceChose() {
+  let chooseZipCode =[] ;
+  let ZipCodeString='';
+  let chooseTypeArray =[] ;
+  let TypeString='';
+  let searchKeyWord ='';
+  //取得選擇區域的值
+  chooseArea.forEach(function(item){
+    if(item.checked===true){
+      chooseZipCode.push(item.value)
+      //console.log(chooseZipCode);
+    }
+  })
+  chooseZipCode.forEach(function(item){
+    ZipCodeString+=`ZipCode eq '${item}' or `
+
+  })
+  //去掉最後面三個字元
+  ZipCodeString=ZipCodeString.slice(0,-3);
+ //取得選擇類型的值
+ chooseType.forEach(function(item){
+   if(item.checked===true){
+    chooseTypeArray.push(item.value)
+
+   }
+ })
+ console.log(chooseTypeArray)
+ chooseTypeArray.forEach(function(item){
+   if(item==='熱門'){
+    TypeString+=`contains(Name, '${item}')`
+   }
+   else if(item!=='熱門'){
+    TypeString+=` or Class1 eq '${item}' or Class2 eq '${item}' or Class3 eq '${item}'`
+   }
+   
+ })
+ //如果TypeString沒有熱門兩個字則刪除前4個字元
+if(TypeString.indexOf('熱門')===-1){
+  TypeString = TypeString.slice(4);
+  
+}
+if(chooseZipCode.length===0 && chooseTypeArray.length>0){
+  searchKeyWord = TypeString
+}
+else if(chooseZipCode.length>0 && chooseTypeArray.length===0){
+  searchKeyWord = ZipCodeString
+}
+else if(chooseZipCode.length>0 && chooseTypeArray.length>0){
+  searchKeyWord = TypeString + ' or ' + ZipCodeString
+}
+//console.log(searchKeyWord)
+searchProcess(searchKeyWord);
+}
 //選擇類別
 function seltTypeData() {
   let searchKeyWord = '';
-  if(selectMenu.value==='熱門景點'){
-    searchKeyWord =`contains(DescriptionDetail,'熱門')`;
+  if (selectMenu.value === '熱門景點') {
+    searchKeyWord = `contains(DescriptionDetail,'熱門')`;
   }
-  else{
-    searchKeyWord =`Class1 eq '${selectMenu.value}' or Class2 eq '${selectMenu.value}' or Class3 eq '${selectMenu.value}'`;
+  else {
+    searchKeyWord = `Class1 eq '${selectMenu.value}' or Class2 eq '${selectMenu.value}' or Class3 eq '${selectMenu.value}'`;
   }
-  
+
 
   searchProcess(searchKeyWord)
 }
@@ -54,11 +114,11 @@ function clickTypeData() {
   if (event.target.nodeName === 'BUTTON') {
 
     let searchKeyWord = '';
-    if(event.target.value==='熱門景點'){
-      searchKeyWord =`contains(DescriptionDetail,'熱門')`;
+    if (event.target.value === '熱門景點') {
+      searchKeyWord = `contains(DescriptionDetail,'熱門')`;
     }
-    else{
-      searchKeyWord =`Class1 eq '${event.target.value}' or Class2 eq '${event.target.value}' or Class3 eq '${event.target.value}'`;
+    else {
+      searchKeyWord = `Class1 eq '${event.target.value}' or Class2 eq '${event.target.value}' or Class3 eq '${event.target.value}'`;
     }
     searchProcess(searchKeyWord)
   }
@@ -107,7 +167,7 @@ function cheangProcess() {
 
   })
 }
-//把取道的值組字串並撈回資料
+//把取到的值組字串並撈回資料
 function searchProcess(searchKeyWord) {
 
   axios.get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Taipei?$filter=${searchKeyWord}&$top=1000&$format=JSON`
@@ -118,7 +178,6 @@ function searchProcess(searchKeyWord) {
   )
     .then(function (response) {
       //data = response.data;
-      console.log('有撈到資料')
       //渲染資料
       randerData(response.data)
     })
@@ -177,10 +236,11 @@ function changeClickProcess(e) {
 }
 //監控
 
-//searchClick.addEventListener('click', serachButtonClick, false)
+searchClick.addEventListener('click', wantToGOWhere, false)
 changeClick.addEventListener('click', changeClickProcess, false);
 selectMenu.addEventListener('change', seltTypeData, false);
 typeButton.addEventListener('click', clickTypeData, false);
+advanchSearchButton.addEventListener('click',advanceChose,false);
 //開啟網頁後執行
 cheangProcess()
 
