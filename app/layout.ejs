@@ -27,7 +27,7 @@
       <div class="d-flex">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex align-items-center">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">景點列表</a>
+            <a class="nav-link active" aria-current="page" href="Attractions-list.html">景點列表</a>
           </li>
           <div class="pe-2 px-lg-8 d-flex align-items-center d-none d-md-block">|</div>
         </ul>
@@ -54,8 +54,38 @@
     </div>
   </nav>
 
+
+  
   <%- contents %>
 
+      <!-- pad版以上 footer -->
+      <div class="bg-footer-black w-100 d-none d-md-block">
+
+        <div class="d-flex justify-content-between">
+    
+          <div class="footer mx-auto">
+            <p class="text-white text-center pt-6">© 2021 [F2E] 路過的菜椒仔 - All rights reserved.</p>
+          </div>
+    
+          <div class="goTopBtnArea text-center">
+            <button onclick="topFunction()" class="goTopBtn d-block py-6 px-12" id="goTopBtn" title="Go to top"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+          </div>
+    
+        </div>
+    
+      </div>
+    
+    
+      <!-- 手機版 footer -->
+      <div class="d-block d-md-none">
+      <div class="goTopBtnArea text-center d-block">
+        <button onclick="topFunction()" class="goTopBtn w-100 h-100 py-2" id="goTopBtn" title="Go to top"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>
+      </div>
+    
+      <div class="footer bg-footer-black p-6">
+        <span class="text-white d-block text-center">© 2021 [F2E] 路過的菜椒仔 - All rights reserved.</span>  
+      </div>
+      </div>
 
     <!-- 篩選條件 modal -->
     <form >
@@ -255,6 +285,9 @@
       </div>
     </form>
       <!-- modal 功能結束 -->
+
+
+
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/loaders.css/0.1.2/loaders.css.min.js"></script>
       <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
