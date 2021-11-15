@@ -4,9 +4,14 @@
 var inputSearch = document.querySelector('.inputSearch');
 var searchClick = document.querySelector('.searchClick');
 var changeClick = document.querySelector('.changeClick');
-var showChangeClick = document.querySelector('.showChangeClick'); //全域變數
+var showChangeClick = document.querySelector('.showChangeClick');
+var selectMenu = document.querySelector('.selectMenu');
+var typeButton = document.querySelector('.typeButton');
+var displayCard = document.querySelector('.displayCard');
+var chooseArea = document.querySelectorAll('.areaSelectSection >.formSection >.form-check > input');
+var chooseType = document.querySelectorAll('.chooseType >.formSection >.form-check > input');
+var advanchSearchButton = document.querySelector('.advanchSearchButton'); //全域變數
 
-var inputData = '';
 var zipCodeMap = {
   100: '中正區',
   103: '大同區',
@@ -20,27 +25,99 @@ var zipCodeMap = {
   114: '內湖區',
   115: '南港區',
   116: '文山區'
-}; //取得資料
+}; //class的分類["遊憩類","自然風景類","溫泉類","都會公園類","體育健身類","藝術類","其他"]
+//想出發去哪裡
 
-function getInputData() {
+function wantToGOWhere() {
+  var searchKeyWord = '';
+
   if (inputSearch.value === '') {
     alert('輸入到空白，請重新輸入');
   } else {
-    inputData = inputSearch.value;
+    //console.log(inputSearch.value)
+    searchKeyWord = "contains(DescriptionDetail ,'".concat(inputSearch.value, "') or contains(Name, '").concat(inputSearch.value, "') or contains(Address ,'").concat(inputSearch.value, "')"); //`contains(DescriptionDetail ,'熱門') or contains(Name, '熱門') or contains(Address ,'熱門')`
+    //console.log(searchKeyWord)
+
+    searchProcess(searchKeyWord);
+  }
+} //進階選擇
+
+
+function advanceChose() {
+  var chooseZipCode = [];
+  var ZipCodeString = '';
+  var chooseTypeArray = [];
+  var TypeString = '';
+  var searchKeyWord = ''; //取得選擇區域的值
+
+  chooseArea.forEach(function (item) {
+    if (item.checked === true) {
+      chooseZipCode.push(item.value); //console.log(chooseZipCode);
+    }
+  });
+  chooseZipCode.forEach(function (item) {
+    ZipCodeString += "ZipCode eq '".concat(item, "' or ");
+  }); //去掉最後面三個字元
+
+  ZipCodeString = ZipCodeString.slice(0, -3); //取得選擇類型的值
+
+  chooseType.forEach(function (item) {
+    if (item.checked === true) {
+      chooseTypeArray.push(item.value);
+    }
+  });
+  console.log(chooseTypeArray);
+  chooseTypeArray.forEach(function (item) {
+    if (item === '熱門') {
+      TypeString += "contains(Name, '".concat(item, "')");
+    } else if (item !== '熱門') {
+      TypeString += " or Class1 eq '".concat(item, "' or Class2 eq '").concat(item, "' or Class3 eq '").concat(item, "'");
+    }
+  }); //如果TypeString沒有熱門兩個字則刪除前4個字元
+
+  if (TypeString.indexOf('熱門') === -1) {
+    TypeString = TypeString.slice(4);
   }
 
-  inputSearch.value = '';
-} //搜尋按鈕
+  if (chooseZipCode.length === 0 && chooseTypeArray.length > 0) {
+    searchKeyWord = TypeString;
+  } else if (chooseZipCode.length > 0 && chooseTypeArray.length === 0) {
+    searchKeyWord = ZipCodeString;
+  } else if (chooseZipCode.length > 0 && chooseTypeArray.length > 0) {
+    searchKeyWord = TypeString + ' or ' + ZipCodeString;
+  } //console.log(searchKeyWord)
 
 
-function serachButtonClick(e) {
-  if (e.target.nodeName !== 'I') {
-    return;
+  searchProcess(searchKeyWord);
+} //選擇類別
+
+
+function seltTypeData() {
+  var searchKeyWord = '';
+
+  if (selectMenu.value === '熱門景點') {
+    searchKeyWord = "contains(DescriptionDetail,'\u71B1\u9580')";
   } else {
-    //console.log('test')
-    //console.log(e.target.nodeName)
-    getInputData();
-    console.log(inputData);
+    searchKeyWord = "Class1 eq '".concat(selectMenu.value, "' or Class2 eq '").concat(selectMenu.value, "' or Class3 eq '").concat(selectMenu.value, "'");
+  }
+
+  searchProcess(searchKeyWord);
+} //按鈕類別
+
+
+function clickTypeData() {
+  if (event.target.nodeName === 'BUTTON') {
+    var searchKeyWord = '';
+
+    if (event.target.value === '熱門景點') {
+      searchKeyWord = "contains(DescriptionDetail,'\u71B1\u9580')";
+    } else {
+      searchKeyWord = "Class1 eq '".concat(event.target.value, "' or Class2 eq '").concat(event.target.value, "' or Class3 eq '").concat(event.target.value, "'");
+    }
+
+    searchProcess(searchKeyWord);
+  } else {
+    return;
   }
 } //換一組功能
 
@@ -70,24 +147,20 @@ function cheangProcess() {
       console.log(error);
     });
   });
-} //把取道的值組字串並撈回資料
-// function searchProcess() {
-//   axios.get(`https://ptx.transportdata.tw/MOTC/v2/Tourism/Restaurant/Taipei?$filter=contains(Name,'${keyWord}')&$top=${showNum}&$format=JSON`
-//     ,
-//     {
-//       headers: getAuthorizationHeader()
-//     }
-//   )
-//     .then(function (response) {
-//       data = response.data;
-//       //渲染資料
-//       randerData()
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-// }
-//授權碼記得要用在axios內
+} //把取到的值組字串並撈回資料
+
+
+function searchProcess(searchKeyWord) {
+  axios.get("https://ptx.transportdata.tw/MOTC/v2/Tourism/ScenicSpot/Taipei?$filter=".concat(searchKeyWord, "&$top=1000&$format=JSON"), {
+    headers: getAuthorizationHeader()
+  }).then(function (response) {
+    //data = response.data;
+    //渲染資料
+    randerData(response.data);
+  })["catch"](function (error) {
+    console.log(error);
+  });
+} //授權碼記得要用在axios內
 
 
 function getAuthorizationHeader() {
@@ -106,26 +179,20 @@ function getAuthorizationHeader() {
     'X-Date': GMTString
   };
 } //顯示資料
-// function showDataProcess(responseData) {
-//   let content = ''
-//   responseData.forEach((item, index) => {
-//     content += `<li class="swiper-slide">
-//     <a href="#">
-//       <img class="single-rounded-1 pe-md-7 bg-primary" src=${item[index][0].Picture.PictureUrl1} alt=${item[index][0].Name}">
-//       <h3 class="text-secondary mt-2">${item[index][0].Name}</h3>
-//     <i class="fas fa-map-marker-alt text-secondary"><span class="ps-1 text-tertiary"${zipCodeMap[item[index][0].ZipCode]}
-//   ｜${item[index][0].OpenTime}</span ></i >
-//     </a >
-//   </li > `
-//   })
-//   showChangeClick.innerHTML = content
-// }
-//渲染資料
-// function randerData(responseData) {
-//   showDataProcess(responseData)
-// }
-//search.addEventListener('click',searchProcess,false)
-//功能執行
+
+
+function showDataProcess(responseData) {
+  var content = '';
+  responseData.forEach(function (item, index) {
+    content += "<div class=\"col-12 col-md-6 col-lg-3\">\n    <div class=\"card bg-transparent border-0 mb-5\">\n      <div class=\" single-rounded-8 single-rounded-lg-6 mb-2 card-box-shadow\">\n        <img src=\"".concat(item.Picture.PictureUrl1, "\"\n          class=\"card-img-top single-rounded-8 single-rounded-lg-6 w-100 bg-primary\" alt=\"...\">\n      </div>\n      <div class=\"card-body\">\n        <h3 class=\"card-title mb-2 fs-lg-4\">").concat(item.Name, "</h3>\n        <p class=\"card-text mb-4 mb-lg-2 text-light-gray fs-lg-4 ellipsis5\">\n          ").concat(item.DescriptionDetail, "\n        </p>\n        <a href=\"#\" class=\"text-success stretched-link\"># \u71B1\u9580\u666F\u9EDE</a>\n      </div>\n    </div>\n  </div> ");
+  });
+  displayCard.innerHTML = content;
+} //渲染資料
+
+
+function randerData(responseData) {
+  showDataProcess(responseData);
+} //功能執行
 //點擊換一組功能
 
 
@@ -135,8 +202,11 @@ function changeClickProcess(e) {
 } //監控
 
 
-searchClick.addEventListener('click', serachButtonClick, false);
-changeClick.addEventListener('click', changeClickProcess, false); //開啟網頁後執行
+searchClick.addEventListener('click', wantToGOWhere, false);
+changeClick.addEventListener('click', changeClickProcess, false);
+selectMenu.addEventListener('change', seltTypeData, false);
+typeButton.addEventListener('click', clickTypeData, false);
+advanchSearchButton.addEventListener('click', advanceChose, false); //開啟網頁後執行
 
 cheangProcess(); //套件
 
@@ -165,7 +235,7 @@ var swiper = new Swiper('.siteSwiper', {
   }
 }); // footer 的 go to top button:
 
-mybutton = document.getElementById("goTopBtn"); // When the user scrolls down 20px from the top of the document, show the button
+var mybutton = document.getElementById("goTopBtn"); // When the user scrolls down 20px from the top of the document, show the button
 
 window.onscroll = function () {
   scrollFunction();
